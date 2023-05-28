@@ -467,7 +467,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!114 &2034562829
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -480,12 +480,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5b663d20b3ea0f04ba2b041838cd2a7d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  width: 5
-  height: 10
+  width: 100
+  height: 100
   hexagonSize: 1
   forwardOffsetOddHeight: 0
-  targetPosition: {x: 3, y: 5}
-  layerCount: 3
+  targetPosition: {x: 5, y: 5}
+  layerCount: 2
   drawDuration: 20
 --- !u!4 &2034562830
 Transform:

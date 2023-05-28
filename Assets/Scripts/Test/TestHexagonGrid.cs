@@ -29,10 +29,35 @@ namespace Test
             //_grid.ForEach((x) => { Debug.Log(x); });
             
             {
-                var start = Time.timeAsDouble;
+                // Took 113.2174 ms for getting surrounding cells of up to 1000 layer count, grid 1000x1000, position (500,500)
+                // Took 24.96719 ms for getting surrounding cells of up to 500 layer count, grid 500x500, position (250,250)
+                // Took 3.333092 ms for getting surrounding cells of up to 100 layer count, grid 100x100, position (50,50)
+                // Took 2.102852 ms for getting surrounding cells of up to 50 layer count, grid 50x50, position (25,25)
+
+                // Took 1.806259 ms for getting surrounding cells of up to 10 layer count, grid 10x10, position (5,5)
+                // Took 1.760483 ms for getting surrounding cells of up to 3 layer count, grid 10x10, position (5,5)
+                // Took 1.670837 ms for getting surrounding cells of up to 2 layer count, grid 10x10, position (5,5)
+                // Took 0.1335144 ms for getting surrounding cells of up to 1 layer count, grid 10x10, position (5,5)
+
+                // Took 1.953125 ms for getting surrounding cells of up to 2 layer count, grid 100x100, position (5,5)
+                // Conclusion, though quite obvious, the more layer to calculate, the slower it is
+
+
+                var start = Time.realtimeSinceStartup;
                 var surroundings = _grid.GetSurroundingCells(_grid.GetCell(targetPosition.x, targetPosition.y), layerCount, true);
-                var duration = Time.timeAsDouble - start;
-                Debug.Log($"Took {duration} seconds for getting surrounding cells of up to {layerCount}");
+                var duration = Time.realtimeSinceStartup - start;
+                Debug.Log($"Took {duration * 1000f} ms for getting surrounding cells of up to {layerCount} layers");
+            }
+
+            {
+                // Took 0.003814697 ms for getting 6 surrounding cells
+                // Conclusion, since there is not much calculation and loops at all in getting 6 surrounding cells directly
+                // it is recommended to use this whenever possible
+
+                var start = Time.realtimeSinceStartup;
+                var surroundings = _grid.GetSurroundingCells(_grid.GetCell(targetPosition.x, targetPosition.y), true);
+                var duration = Time.realtimeSinceStartup - start;
+                Debug.Log($"Took {duration * 1000f} ms for getting 6 surrounding cells");
             }
         }
 
