@@ -29,11 +29,10 @@ namespace Test
             //_grid.ForEach((x) => { Debug.Log(x); });
             
             {
-                //var surroundings = _grid.GetSurroundings(_grid.GetCell(targetPosition.x, targetPosition.y), true);
-                //foreach (var cell in surroundings)
-                //{
-                //    Debug.Log(cell);
-                //}
+                var start = Time.timeAsDouble;
+                var surroundings = _grid.GetSurroundingCells(_grid.GetCell(targetPosition.x, targetPosition.y), layerCount, true);
+                var duration = Time.timeAsDouble - start;
+                Debug.Log($"Took {duration} seconds for getting surrounding cells of up to {layerCount}");
             }
         }
 
@@ -55,6 +54,9 @@ namespace Test
                 yield return waitHalfSecond;
                 bool isForwardOffsetHeight = (forwardOffsetOddHeight && cell.Y % 2 == 1) || (!forwardOffsetOddHeight && cell.Y % 2 == 0);
 
+                // 1.732 is square root of 3.
+                // 0.886 is square root of 3 divided by 2
+                // 1.5 is height difference between 2 row
                 Vector3 start = new Vector3(cell.X * 1.732f * hexagonSize+ (isForwardOffsetHeight ? 0.866f * hexagonSize : 0), 0.2f, cell.Y * 1.5f * hexagonSize);
 
                 Vector3 point1 = start + new Vector3(0, 0.2f, 1) * hexagonSize;

@@ -42,6 +42,10 @@ namespace Grid2D
 
             bool isForwardOffsetHeight = (ForwardOffsetOddHeight && cell.Y % 2 == 1) || (!ForwardOffsetOddHeight && cell.Y % 2 == 0);
 
+            // The reason why GetPositionAtDirection was used instead of GetCell is because GetCell will return null
+            // and thus stop the searching for the specific side of the specific layer, in which the outer most position occupy,
+            // and thus may miss cells.
+
             {
                 // Left
                 var outerMost = GetPositionAtDirection((cell.X, cell.Y), layerIndex, isForwardOffsetHeight, Direction.Left);
@@ -142,6 +146,8 @@ namespace Grid2D
             if (includeSelf) { result.Add(cell); }
             for (int i = 1; i < layerCount; i++)
             {
+                // TODO: need to figure a way to end the for loop of layer early in case the layer count to calculate is large
+
                 result.AddRange(GetCellsAtLayerIndex(cell, i, false));
             }
             return result.ToArray();
