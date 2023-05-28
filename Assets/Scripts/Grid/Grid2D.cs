@@ -4,13 +4,13 @@ using System.Text;
 
 namespace Grid2D
 {
-    public class Grid2D<T> where T : class
+    public class Grid
     {
         public int Width { get; private set; }
         public int Height { get; private set; }
         public List<Cell> Array { get; private set; }
 
-        public Grid2D(int width, int height)
+        public Grid(int width, int height)
         {
             if(width <= 0 || height <= 0)
             {
@@ -30,7 +30,7 @@ namespace Grid2D
 
         public Cell GetCell(int x, int y)
         {
-            if (x <= 0 || y <= 0 || x > Width - 1 || y > Height - 1)
+            if (x < 0 || y < 0 || x > Width - 1 || y > Height - 1)
             {
                 return null;
             }
@@ -54,23 +54,25 @@ namespace Grid2D
             return stringBuilder.ToString();
         }
 
-        public class Cell
+        
+    }
+
+    public class Cell
+    {
+        public object Value { get; set; }
+        public int X { get; private set; }
+        public int Y { get; private set; }
+
+        public Cell(int x, int y, object value = null)
         {
-            public T Value { get; set; }
-            public int X { get; private set; }
-            public int Y { get; private set; }
+            Value = value;
+            X = x;
+            Y = y;
+        }
 
-            public Cell(int x, int y, T value = null)
-            {
-                Value = value;
-                X = x;
-                Y = y;
-            }
-
-            public override string ToString()
-            {
-                return $"({X},{Y},{Value})";
-            }
+        public override string ToString()
+        {
+            return $"({X},{Y},{Value})";
         }
     }
 }
