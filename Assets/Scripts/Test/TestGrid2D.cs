@@ -7,10 +7,11 @@ namespace Test
     {
         [SerializeField] private int width;
         [SerializeField] private int height;
-        private Grid2D<string> _grid;
+        private Grid2D.Grid _grid;
+
         private void Start()
         {
-            _grid = new Grid2D<string>(width, height);
+            _grid = new Grid2D.Grid(width, height);
             Debug.Log(_grid);
             for(int y = 0; y < height; y++)
             {
