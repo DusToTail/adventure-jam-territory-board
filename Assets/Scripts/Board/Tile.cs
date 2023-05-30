@@ -1,5 +1,6 @@
 using UnityEngine;
 using Grid2D;
+using Mechanics;
 
 namespace Board
 {
@@ -18,20 +19,37 @@ namespace Board
 
         public string Name { get; set; }
 
-        public float Total { get { return Amount * Factor; } }
-        public float Amount => GetInfluencedAmount();
-        public float Factor { get; set; } = 1f;
+        public float TotalInfluenceInput { get { return InfluenceInput * InfluenceInputFactor; } }
+        public float InfluenceInput => _influenceInput;
+        public float InfluenceInputFactor
+        {
+            get
+            {
+                return _influenceInputFactor;
+            }
+            set
+            {
+                _influenceInputFactor = value;
+                //onInfluenceReceiverChanged?.Invoke(this);
+            }
+        }
+
+        //public event IInfluenceReceiver.OnChanged onInfluenceReceiverChanged;
+
+        public ITeam Team { get { return _team; } set { _team = value; onTeamChanged?.Invoke(this, _team); } }
+        public event ITeamMember.OnTeamChanged onTeamChanged;
 
         private Cell _cell;
         private IStructure _structure = null;
         private IUnit _unit = null;
+        private ITeam _team = null;
+        protected float _influenceInput;
+        protected float _influenceInputFactor = 1f;
 
         public void SetCell(Cell cell)
         {
             _cell = cell;
             Name = $"({X},{Y})";
         }
-
-        public abstract float GetInfluencedAmount();
     }
 }

@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using UnityEngine;
 using Grid2D;
 
@@ -63,6 +64,41 @@ namespace Board
 
                 cell.Value = hexTile;
             });
+        }
+
+        public HexagonTile GetTileAtPosition(int x, int y)
+        {
+            var cell = _grid.GetCell(x, y);
+            if(cell == null) { return null; }
+            return cell.Value as HexagonTile;
+        }
+
+        public HexagonTile[] GetSurroundingTiles(int x, int y, bool includeSelf = true)
+        {
+            var cell = _grid.GetCell(x, y);
+            if (cell == null) { return new HexagonTile[0]; }
+            var cells = _grid.GetSurroundingCells(cell, includeSelf);
+            var result = new List<HexagonTile>(cells.Length);
+            foreach(var c in cells)
+            {
+                result.Add(c.Value as HexagonTile);
+            }
+
+            return result.ToArray();
+        }
+
+        public HexagonTile[] GetSurroundingTiles(int x, int y, int layerCount, bool includeSelf = true)
+        {
+            var cell = _grid.GetCell(x, y);
+            if (cell == null) { return new HexagonTile[0]; }
+            var cells = _grid.GetSurroundingCells(cell, layerCount, includeSelf);
+            var result = new List<HexagonTile>(cells.Length);
+            foreach (var c in cells)
+            {
+                result.Add(c.Value as HexagonTile);
+            }
+
+            return result.ToArray();
         }
 
         [System.Serializable]
