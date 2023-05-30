@@ -2,8 +2,11 @@ namespace Mechanics
 {
     public interface IInfluenceSender
     {
-        public float Total { get; }
-        public float Amount { get; }
-        public float Factor { get; set; }
+        public delegate void OnChanged(IInfluenceSender sender);
+        public event OnChanged onInfluenceSenderChanged;
+
+        public float TotalInfluenceOutput { get; }
+        public float InfluenceOutput { get; }
+        public float InfluenceOutputFactor { get; set; }
     }
 }

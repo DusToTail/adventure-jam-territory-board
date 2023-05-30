@@ -2,8 +2,8 @@ namespace Mechanics
 {
     public interface IInfluenceReceiver
     {
-        public float Total { get; }
-        public float Amount { get; }
-        public float Factor { get; set; }
+        public float TotalInfluenceInput { get; }
+        public float InfluenceInput { get; }
+        public float InfluenceInputFactor { get; set; }
     }
 }
