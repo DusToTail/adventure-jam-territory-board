@@ -19,6 +19,10 @@ namespace Mechanics
             _members = new List<ITeamMember>();
         }
 
+        /// <summary>
+        /// Use TeamManager class for edit team members
+        /// </summary>
+        /// <param name="member"></param>
         public void AddMember(ITeamMember member)
         {
             if(member == null || _members.Contains(member)) { return; }
@@ -27,6 +31,10 @@ namespace Mechanics
             onMemberAdded?.Invoke(member);
         }
 
+        /// <summary>
+        /// Use TeamManager class for edit team members
+        /// </summary>
+        /// <param name="member"></param>
         public void RemoveMember(ITeamMember member)
         {
             if (member == null || !_members.Contains(member)) { return; }
