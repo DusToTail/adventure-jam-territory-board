@@ -1,6 +1,6 @@
 {
     "name": "TerritoryBoard.Mechanics",
-    "rootNamespace": "TerritoryBoard",
+    "rootNamespace": "TerritoryBoard.Mechanics",
     "references": [],
     "includePlatforms": [],
     "excludePlatforms": [],

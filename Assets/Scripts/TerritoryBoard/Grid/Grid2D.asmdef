@@ -1,6 +1,6 @@
 {
     "name": "TerritoryBoard.Grid2D",
-    "rootNamespace": "TerritoryBoard",
+    "rootNamespace": "TerritoryBoard.Grid2D",
     "references": [],
     "includePlatforms": [],
     "excludePlatforms": [],

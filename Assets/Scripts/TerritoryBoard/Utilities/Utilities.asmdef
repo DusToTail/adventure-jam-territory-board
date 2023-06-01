@@ -1,6 +1,6 @@
 {
     "name": "TerritoryBoard.Utilities",
-    "rootNamespace": "TerritoryBoard",
+    "rootNamespace": "TerritoryBoard.Utilities",
     "references": [],
     "includePlatforms": [],
     "excludePlatforms": [],
