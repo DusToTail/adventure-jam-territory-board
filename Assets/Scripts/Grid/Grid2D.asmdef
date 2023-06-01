@@ -1,9 +1,7 @@
 {
-    "name": "TurnBasedSystem",
+    "name": "Grid2D",
     "rootNamespace": "",
-    "references": [
-        "GUID:d6fac060f4489434b91fa030b23d0f25"
-    ],
+    "references": [],
     "includePlatforms": [],
     "excludePlatforms": [],
     "allowUnsafeCode": false,

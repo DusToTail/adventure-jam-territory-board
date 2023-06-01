@@ -1,8 +1,9 @@
 {
-    "name": "TurnBasedSystem",
+    "name": "Board",
     "rootNamespace": "",
     "references": [
-        "GUID:d6fac060f4489434b91fa030b23d0f25"
+        "GUID:4cf7883a314fea14bb40c7970365de0f",
+        "GUID:60776873e74f15d4583c9d7decda31e6"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],
@@ -12,5 +13,5 @@
     "autoReferenced": true,
     "defineConstraints": [],
     "versionDefines": [],
-    "noEngineReferences": true
+    "noEngineReferences": false
 }
