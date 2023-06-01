@@ -1,61 +1,64 @@
 using System.Collections.Generic;
 
-public class BaseManager<T> where T : IUniqueIdentifier, new()
+namespace Utilities
 {
-    public static BaseManager<T> Instance
+    public class BaseManager<T> where T : IUniqueIdentifier
     {
-        get
+        public static BaseManager<T> Instance
         {
-            if (_instance == null)
+            get
             {
-                _instance = new BaseManager<T>();
+                if (_instance == null)
+                {
+                    _instance = new BaseManager<T>();
+                }
+                return _instance;
             }
-            return _instance;
+            set
+            {
+                _instance = value;
+            }
         }
-        set
+
+        public Dictionary<string, T> Dictionary { get; private set; }
+        public delegate void OnAdded(T x);
+        public delegate void OnRemoved(T x);
+        public event OnAdded onAdded;
+        public event OnRemoved onRemoved;
+
+        private static BaseManager<T> _instance;
+
+        protected BaseManager()
         {
-            _instance = value;
+            Dictionary = new Dictionary<string, T>();
+        }
+
+        public virtual void Add(T x)
+        {
+            if (x == null || Dictionary.ContainsKey(x.Id)) { return; }
+            bool success = Dictionary.TryAdd(x.Id, x);
+
+            if (success)
+                onAdded?.Invoke(x);
+        }
+        public virtual void Remove(T x)
+        {
+            if (x == null || !Dictionary.ContainsKey(x.Id)) { return; }
+            bool success = Dictionary.Remove(x.Id);
+
+            if (success)
+                onRemoved?.Invoke(x);
+        }
+        public virtual T Get(string id)
+        {
+            T result;
+            bool success = Dictionary.TryGetValue(id, out result);
+            return success ? result : default(T);
         }
     }
 
-    public Dictionary<int, T> Dictionary { get; private set; }
-    public delegate void OnAdded(T x);
-    public delegate void OnRemoved(T x);
-    public event OnAdded onAdded;
-    public event OnRemoved onRemoved;
-
-    private static BaseManager<T> _instance;
-
-    private BaseManager()
+    public interface IUniqueIdentifier
     {
-        Dictionary = new Dictionary<int, T>();
+        public string Id { get; }
     }
-
-    public virtual void Add(T x)
-    {
-        if(x == null || Dictionary.ContainsKey(x.Id)) { return; }
-        bool success = Dictionary.TryAdd(x.Id, x);
-        
-        if(success)
-            onAdded?.Invoke(x);
-    }
-    public virtual void Remove(T x)
-    {
-        if (x == null || !Dictionary.ContainsKey(x.Id)) { return; }
-        bool success = Dictionary.Remove(x.Id);
-
-        if(success)
-            onRemoved?.Invoke(x);
-    }
-    public virtual T Get(int id)
-    {
-        T result;
-        bool success = Dictionary.TryGetValue(id, out result);
-        return success ? result : default(T);
-    }
-}
-
-public interface IUniqueIdentifier
-{
-    public int Id { get; }
 }
