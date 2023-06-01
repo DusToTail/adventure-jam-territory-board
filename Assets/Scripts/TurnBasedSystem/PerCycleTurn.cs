@@ -5,9 +5,6 @@ namespace TurnBasedSystem
 {
     public class PerCycleTurn : Turn
     {
-        public List<IActor> Actors { get; private set; }
-        public List<IAction> Actions { get; private set; }
-
         public PerCycleTurn(string id) : base(id)
         {
             Actors = new List<IActor>();
@@ -25,7 +22,7 @@ namespace TurnBasedSystem
             }
             return true;
         }
-        public override bool FinishedExcution()
+        public override bool HasFinishedExecution()
         {
             foreach (var actor in Actors)
             {
