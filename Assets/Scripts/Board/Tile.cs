@@ -6,8 +6,60 @@ namespace Board
 {
     public abstract class Tile : MonoBehaviour, ITile
     {
-        public IStructure Structure { get { return _structure; } set { _structure = value; onStructureChanged?.Invoke(value); } }
-        public IUnit Unit { get { return _unit; } set { _unit = value; onUnitChanged?.Invoke(value); } }
+        public IStructure Structure 
+        {
+            get 
+            { 
+                return _structure; 
+            } 
+            set 
+            {
+                if(value == null)
+                {
+                    if(_structure is IOnTileExit exit)
+                    {
+                        exit.OnTileExit(this);
+                    }
+                    _structure = value;
+                }
+                else
+                {
+                    _structure = value;
+                    if (_structure is IOnTileEnter enter)
+                    {
+                        enter.OnTileEnter(this);
+                    }
+                }
+                onStructureChanged?.Invoke(value); 
+            }
+        }
+        public IUnit Unit 
+        { 
+            get 
+            { 
+                return _unit; 
+            } 
+            set 
+            {
+                if (value == null)
+                {
+                    if (_unit is IOnTileExit exit)
+                    {
+                        exit.OnTileExit(this);
+                    }
+                    _unit = value;
+                }
+                else
+                {
+                    _unit = value;
+                    if (_unit is IOnTileEnter enter)
+                    {
+                        enter.OnTileEnter(this);
+                    }
+                }
+                onUnitChanged?.Invoke(value); 
+            } 
+        }
 
         public delegate void OnStructureChanged(IStructure structure);
         public delegate void OnUnitChanged(IUnit unit);
@@ -30,11 +82,8 @@ namespace Board
             set
             {
                 _influenceInputFactor = value;
-                //onInfluenceReceiverChanged?.Invoke(this);
             }
         }
-
-        //public event IInfluenceReceiver.OnChanged onInfluenceReceiverChanged;
 
         public ITeam Team { get { return _team; } set { _team = value; onTeamChanged?.Invoke(this, _team); } }
         public event ITeamMember.OnTeamChanged onTeamChanged;
