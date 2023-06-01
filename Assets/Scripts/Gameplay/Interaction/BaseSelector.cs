@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace TerritoryBoard.Interaction
+namespace Gameplay.Interaction
 {
     public class BaseSelector : MonoBehaviour, ISelector
     {

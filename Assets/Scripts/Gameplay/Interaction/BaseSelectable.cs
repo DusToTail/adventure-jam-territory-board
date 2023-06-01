@@ -1,7 +1,7 @@
 using System.Collections;
 using UnityEngine;
 
-namespace TerritoryBoard.Interaction
+namespace Gameplay.Interaction
 {
     [RequireComponent(typeof(Collider))]
     public class BaseSelectable : MonoBehaviour, ISelectable

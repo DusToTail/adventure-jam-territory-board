@@ -2,7 +2,7 @@ using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.InputSystem;
 
-namespace TerritoryBoard.Interaction
+namespace Gameplay.Interaction
 {
     public class PointerSelector : BaseSelector
     {

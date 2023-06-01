@@ -1,6 +1,6 @@
 {
-    "name": "TerritoryBoard.Interaction",
-    "rootNamespace": "TerritoryBoard",
+    "name": "Gameplay.Interaction",
+    "rootNamespace": "Gamplay",
     "references": [
         "GUID:75469ad4d38634e559750d17036d5f7c"
     ],

@@ -1,4 +1,4 @@
-namespace TerritoryBoard.Interaction
+namespace Gameplay.Interaction
 {
     public interface ISelector
     {
