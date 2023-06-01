@@ -1,6 +1,6 @@
 using System.Collections;
 using UnityEngine;
-using Grid2D;
+using TerritoryBoard.Grid2D;
 
 namespace Test
 {

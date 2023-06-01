@@ -1,67 +1,64 @@
 using System.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.InputSystem;
-using TurnBasedSystem;
+using TerritoryBoard.TurnBasedSystem;
 
-namespace Test
+public class TestTurnBasedSystem : MonoBehaviour
 {
-    public class TestTurnBasedSystem : MonoBehaviour
+    public enum Mode
     {
-        public enum Mode
+        PerActor,
+        PerCycle
+    }
+    [SerializeField] private Mode turnMode;
+    [SerializeField] ActorContainer[] actorContainers;
+    private TurnBasedEngine _engine;
+    private TurnController _turnController;
+    private ActorManager _actorManager;
+
+    private void Start()
+    {
+        if(turnMode == Mode.PerActor)
         {
-            PerActor,
-            PerCycle
+            _turnController = new PerActorTurnController();
         }
-        [SerializeField] private Mode turnMode;
-        [SerializeField] ActorContainer[] actorContainers;
-        private TurnBasedEngine _engine;
-        private TurnController _turnController;
-        private ActorManager _actorManager;
-
-        private void Start()
+        else if(turnMode == Mode.PerCycle)
         {
-            if(turnMode == Mode.PerActor)
-            {
-                _turnController = new PerActorTurnController();
-            }
-            else if(turnMode == Mode.PerCycle)
-            {
-                _turnController = new PerCycleTurnController();
-            }
-            _actorManager = new ActorManager();
-            _engine = TurnBasedEngine.Instance;
-            _engine.SetTurnController(_turnController);
-            _engine.SetActorManager(_actorManager);
-            _engine.Rebind();
-
-            _engine.onStateChanged += (x) =>
-            {
-                Debug.Log("State:" + x);
-            };
-            _turnController.onPhaseChanged += (x) =>
-            {
-                Debug.Log("Phase:" + x);
-            };
+            _turnController = new PerCycleTurnController();
         }
+        _actorManager = new ActorManager();
+        _engine = TurnBasedEngine.Instance;
+        _engine.SetTurnController(_turnController);
+        _engine.SetActorManager(_actorManager);
+        _engine.Rebind();
 
-        private async void Update()
+        _engine.onStateChanged += (x) =>
         {
-            if (_engine == null || _engine.State != TurnBasedEngine.EngineState.Standby) { return; }
-            if (Keyboard.current.enterKey.wasPressedThisFrame)
+            Debug.Log("State:" + x);
+        };
+        _turnController.onPhaseChanged += (x) =>
+        {
+            Debug.Log("Phase:" + x);
+        };
+    }
+
+    private async void Update()
+    {
+        if (_engine == null || _engine.State != TurnBasedEngine.EngineState.Standby) { return; }
+        if (Keyboard.current.enterKey.wasPressedThisFrame)
+        {
+            foreach (var actor in actorContainers)
             {
-                foreach (var actor in actorContainers)
-                {
-                    _engine.RegisterActor(actor.Actor);
-                }
+                _engine.RegisterActor(actor.Actor);
+            }
 
-                Debug.Log($">>>Turn No.{_engine.TurnController.Turns.Count}");
-                await _engine.RunTurnAsync();
-                Debug.Log($"Turn ID {_engine.TurnController.CurrentTurn.Id}<<<");
+            Debug.Log($">>>Turn No.{_engine.TurnController.Turns.Count}");
+            await _engine.RunTurnAsync();
+            Debug.Log($"Turn ID {_engine.TurnController.CurrentTurn.Id}<<<");
 
-                foreach (var actor in actorContainers)
-                {
-                    _engine.UnregisterActor(actor.Actor);
-                }
+            foreach (var actor in actorContainers)
+            {
+                _engine.UnregisterActor(actor.Actor);
             }
         }
     }
