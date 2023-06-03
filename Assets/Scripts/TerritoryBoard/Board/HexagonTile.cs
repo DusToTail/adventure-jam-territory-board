@@ -5,29 +5,32 @@ namespace TerritoryBoard
 {
     public class HexagonTile : Tile
     {
-        [SerializeField] private Config config;
+        public Vector3 defaultWorldPosition { get; private set; }
         private HexagonBoard _board;
-        private Vector3 _defaultWorldPosition;
+        private int _influenceReceiveRange;
 
         private void Start()
         {
             _board = FindObjectOfType<HexagonBoard>();
+
+            var meshFilter = GetComponent<MeshFilter>();
+            meshFilter.sharedMesh = _board.CachedMesh;
+
+            var renderer = GetComponent<MeshRenderer>();
+            renderer.sharedMaterial = _board.CachedMaterial;
+
+            _influenceReceiveRange = _board.tileConfig.influenceReceiveRange;
         }
 
         public void SetDefaultWorldPosition(Vector3 pos)
         {
-            _defaultWorldPosition = pos;
+            defaultWorldPosition = pos;
         }
 
         public TeamInfluenceProfile GetTeamInfluenceProfile()
         {
-            if( _board == null )
-            {
-                return null;
-            }
-
             var influenceProfile = new TeamInfluenceProfile();
-            var tiles = _board.GetSurroundingTiles(X, Y, config.influenceReceiveRange);
+            var tiles = _board.GetSurroundingTiles(X, Y, _influenceReceiveRange);
             foreach (var tile in tiles)
             {
                 var struc = tile.Structure;
@@ -43,6 +46,15 @@ namespace TerritoryBoard
         [System.Serializable]
         public struct Config
         {
+            public enum Pivot
+            {
+                Bottom,
+                Center,
+                Top
+            }
+            public float size;
+            public float height;
+            public Pivot pivot;
             public int influenceReceiveRange;
         }
     }

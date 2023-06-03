@@ -6,21 +6,13 @@ namespace TerritoryBoard
 {
     public class HexagonBoard : MonoBehaviour
     {
+        [SerializeField] private GameObject prefab;
         [HideInInspector] public BoardConfig boardConfig;
-        [HideInInspector] public TileConfig tileConfig;
+        [HideInInspector] public HexagonTile.Config tileConfig;
 
+        public Mesh CachedMesh { get; private set; }
+        public Material CachedMaterial { get; private set; }
         private HexagonGrid _grid;
-        private Mesh _cachedHexagonMesh;
-        private Material _cachedMaterial;
-
-#if UNITY_EDITOR
-        [SerializeField] private bool initializeOnStart;
-        private void Start()
-        {
-            if(initializeOnStart)
-                Initialize();
-        }
-#endif
 
         public void Initialize()
         {
@@ -33,12 +25,11 @@ namespace TerritoryBoard
 
             float hexagonSize = tileConfig.size;
             float hexagonHeight = tileConfig.height;
+            HexagonTile.Config.Pivot pivot = tileConfig.pivot;
 
             // Procedurally create mesh and material and cache them
-            // Not ideal way of getting mesh and material.
-            // TODO: Can just simply create a mesh model and also assign material directly in Editor
-            _cachedHexagonMesh = HexagonTileUtilities.GetMesh(hexagonSize, hexagonHeight);
-            _cachedMaterial = new Material(Shader.Find("Universal Render Pipeline/Lit"));
+            CachedMesh = HexagonTileUtilities.GetMesh(hexagonSize, hexagonHeight, pivot);
+            CachedMaterial = new Material(Shader.Find("Universal Render Pipeline/Lit"));
 
             // Initialize each tile and assign each tile to the cell's value
             _grid = new HexagonGrid(width, height, forwardOffsetOddHeight);
@@ -50,14 +41,7 @@ namespace TerritoryBoard
                 float _z = spawnPos.z + cell.Y * 1.5f * hexagonSize;
                 Vector3 center = new Vector3(_x,_y,_z);
 
-                // TODO: Refactor as this can just be a prefab with all the settings configured for components beforehand
-                var go = new GameObject($"{cell.X},{cell.Y}", new System.Type[] { typeof(MeshFilter), typeof(MeshRenderer), typeof(HexagonTile) });
-                go.transform.position = center;
-               
-                var meshFilter = go.GetComponent<MeshFilter>();
-                meshFilter.sharedMesh = _cachedHexagonMesh;
-                var renderer = go.GetComponent<MeshRenderer>();
-                renderer.sharedMaterial = _cachedMaterial;
+                var go = Instantiate(prefab, center, Quaternion.identity, transform);
                 var hexTile = go.GetComponent<HexagonTile>();
                 hexTile.SetCell(cell);
                 hexTile.SetDefaultWorldPosition(center);
@@ -109,13 +93,6 @@ namespace TerritoryBoard
             public bool forwardOffsetOddHeight;
             public Vector3 spawnPosition;
             public float interval;
-        }
-
-        [System.Serializable]
-        public struct TileConfig
-        {
-            public float size;
-            public float height;
         }
     }
 }

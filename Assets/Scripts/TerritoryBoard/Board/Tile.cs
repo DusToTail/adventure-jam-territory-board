@@ -98,7 +98,9 @@ namespace TerritoryBoard
         public void SetCell(Cell cell)
         {
             _cell = cell;
-            Name = $"({X},{Y})";
+            string name = $"({X},{Y})";
+            Name = name;
+            gameObject.name = name;
         }
     }
 }
