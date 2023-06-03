@@ -5,6 +5,10 @@ namespace TerritoryBoard
 {
     public class HexagonTile : Tile
     {
+        [SerializeField] private MeshFilter meshFilter;
+        [SerializeField] private MeshRenderer meshRenderer;
+        [SerializeField] private MeshCollider meshCollider;
+
         public Vector3 defaultWorldPosition { get; private set; }
         private HexagonBoard _board;
         private int _influenceReceiveRange;
@@ -13,14 +17,9 @@ namespace TerritoryBoard
         {
             _board = FindObjectOfType<HexagonBoard>();
 
-            var meshFilter = GetComponent<MeshFilter>();
             meshFilter.sharedMesh = _board.CachedMesh;
-
-            var renderer = GetComponent<MeshRenderer>();
-            renderer.sharedMaterial = _board.CachedMaterial;
-
-            var collider = GetComponent<MeshCollider>();
-            collider.sharedMesh = _board.CachedMesh;
+            meshRenderer.sharedMaterial = _board.CachedMaterial;
+            meshCollider.sharedMesh = _board.CachedMesh;
 
             _influenceReceiveRange = _board.tileConfig.influenceReceiveRange;
         }
