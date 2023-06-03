@@ -6,8 +6,8 @@ namespace TerritoryBoard
 {
     public class HexagonBoard : MonoBehaviour
     {
-        [SerializeField] BoardConfig boardConfig;
-        [SerializeField] TileConfig tileConfig;
+        [HideInInspector] public BoardConfig boardConfig;
+        [HideInInspector] public TileConfig tileConfig;
 
         private HexagonGrid _grid;
         private Mesh _cachedHexagonMesh;
