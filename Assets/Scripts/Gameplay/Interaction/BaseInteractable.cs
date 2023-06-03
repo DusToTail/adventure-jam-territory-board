@@ -19,8 +19,11 @@ namespace Gameplay.Interaction
         }
         public virtual void OnHoverExit()
         {
-            StopCoroutine(_stayHoverCoroutine);
-            _stayHoverCoroutine = null;
+            if(_stayHoverCoroutine != null)
+            {
+                StopCoroutine(_stayHoverCoroutine);
+                _stayHoverCoroutine = null;
+            }
             isHovered = false;
         }
         public virtual void OnHoverStay()
@@ -34,8 +37,11 @@ namespace Gameplay.Interaction
         }
         public virtual void OnSelectExit()
         {
-            StopCoroutine(_staySelectCoroutine);
-            _staySelectCoroutine = null;
+            if(_staySelectCoroutine != null)
+            {
+                StopCoroutine(_staySelectCoroutine);
+                _staySelectCoroutine = null;
+            }
             isSelected = false;
         }
         public virtual void OnSelectStay()
