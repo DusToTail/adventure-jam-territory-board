@@ -1,6 +1,6 @@
 namespace Gameplay.Interaction
 {
-    public interface ISelector
+    public interface ISelect
     {
         public ISelectable CurrentSelectable { get; }
         public ISelectable PreviousSelectable { get; }
