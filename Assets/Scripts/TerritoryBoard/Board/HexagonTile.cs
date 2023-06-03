@@ -19,6 +19,9 @@ namespace TerritoryBoard
             var renderer = GetComponent<MeshRenderer>();
             renderer.sharedMaterial = _board.CachedMaterial;
 
+            var collider = GetComponent<MeshCollider>();
+            collider.sharedMesh = _board.CachedMesh;
+
             _influenceReceiveRange = _board.tileConfig.influenceReceiveRange;
         }
 
