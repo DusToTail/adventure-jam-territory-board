@@ -55,8 +55,24 @@ namespace TerritoryBoard
         public event IInfluenceSender.OnChanged onInfluenceSenderChanged;
         public event IPopulation.OnChanged onPopulationChanged;
 
-        public ITeam Team { get { return _team; } set { _team = value; onTeamChanged?.Invoke(this, _team); } }
-        public event ITeamMember.OnTeamChanged onTeamChanged;
+        public ITeam Team
+        {
+            get 
+            {
+                return _team;
+            }
+            set
+            {
+                bool changed = _team != value;
+                _team = value;
+                if (changed)
+                {
+                    onTeamChanged?.Invoke(this, _team);
+                }
+            }
+        }
+        public delegate void OnTeamChanged(ITeamMember member, ITeam team);
+        public event OnTeamChanged onTeamChanged;
 
         protected ITile _tile = null;
         protected ITeam _team = null;

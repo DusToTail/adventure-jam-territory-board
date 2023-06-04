@@ -14,6 +14,7 @@ namespace TerritoryBoard
             } 
             set 
             {
+                bool changed = _structure != value;
                 if(value == null)
                 {
                     if(_structure is IOnTileExit exit)
@@ -30,7 +31,10 @@ namespace TerritoryBoard
                         enter.OnTileEnter(this);
                     }
                 }
-                onStructureChanged?.Invoke(value); 
+                if(changed)
+                {
+                    onStructureChanged?.Invoke(value); 
+                }
             }
         }
         public IUnit Unit 
@@ -41,6 +45,7 @@ namespace TerritoryBoard
             } 
             set 
             {
+                bool changed = _unit != value;
                 if (value == null)
                 {
                     if (_unit is IOnTileExit exit)
@@ -57,7 +62,10 @@ namespace TerritoryBoard
                         enter.OnTileEnter(this);
                     }
                 }
-                onUnitChanged?.Invoke(value); 
+                if(changed)
+                {
+                    onUnitChanged?.Invoke(value); 
+                }
             } 
         }
 
@@ -85,8 +93,23 @@ namespace TerritoryBoard
             }
         }
 
-        public ITeam Team { get { return _team; } set { _team = value; onTeamChanged?.Invoke(this, _team); } }
-        public event ITeamMember.OnTeamChanged onTeamChanged;
+        public ITeam Team {
+            get 
+            {
+                return _team;
+            } 
+            set 
+            {
+                bool changed = _team != value;
+                _team = value; 
+                if(changed)
+                {
+                    onTeamChanged?.Invoke(this, _team); 
+                }
+            }
+        }
+        public delegate void OnTeamChanged(ITeamMember member, ITeam team);
+        public event OnTeamChanged onTeamChanged;
 
         private Cell _cell;
         private IStructure _structure = null;
