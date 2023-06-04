@@ -2,6 +2,7 @@ using System;
 using UnityEngine;
 using TerritoryBoard;
 using TerritoryBoard.TurnBasedSystem;
+using TerritoryBoard.Mechanics;
 
 public class GameManager : MonoBehaviour
 {
@@ -10,6 +11,7 @@ public class GameManager : MonoBehaviour
     [SerializeField] private GameConfigSO gameConfigSO;
     public HexagonBoard Board { get; private set; }
     public TurnBasedEngine TurnEngine { get; private set; }
+    public TeamManager TeamManager { get; private set; }
 
     private void Awake()
     {
@@ -43,8 +45,8 @@ public class GameManager : MonoBehaviour
             TurnEngine.Rebind();
         }
 
-        Board.Initialize();
-        Debug.Log("Gamemanager awake");
+        {
+            TeamManager = TeamManager.Instance;
+        }
     }
-
 }
