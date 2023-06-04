@@ -4,7 +4,7 @@ namespace TerritoryBoard.TurnBasedSystem
 {
     public class PerActorTurn : Turn
     {
-        public IActor Actor
+        public ITurnBasedActor Actor
         {
             get
             {
@@ -23,7 +23,7 @@ namespace TerritoryBoard.TurnBasedSystem
                 Actors[0] = value;
             }
         }
-        public IAction Action
+        public ITurnBasedAction Action
         {
             get
             {
@@ -62,11 +62,11 @@ namespace TerritoryBoard.TurnBasedSystem
                 Action.Execute();
             });
         }
-        public override void AddActor(IActor actor)
+        public override void AddActor(ITurnBasedActor actor)
         {
             Actor = actor;
         }
-        public override void AddAction(IAction action)
+        public override void AddAction(ITurnBasedAction action)
         {
             Action = action;
         }

@@ -3,9 +3,9 @@ using TerritoryBoard.Utilities;
 
 namespace TerritoryBoard.TurnBasedSystem
 {
-    public class ActorManager : BaseManager<IActor>
+    public class ActorManager : BaseManager<ITurnBasedActor>
     {
-        public void RegisterActor(IActor actor)
+        public void RegisterActor(ITurnBasedActor actor)
         {
             if (actor == null)
             {
@@ -18,7 +18,7 @@ namespace TerritoryBoard.TurnBasedSystem
             Add(actor);
         }
 
-        public void UnregisterActor(IActor actor)
+        public void UnregisterActor(ITurnBasedActor actor)
         {
             if (actor == null)
             {

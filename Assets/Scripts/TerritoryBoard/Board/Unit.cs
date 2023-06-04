@@ -17,7 +17,7 @@ namespace TerritoryBoard
             _tile = tile;
         }
 
-        public void ExecuteAction(IAction action)
+        public void ExecuteAction(IMechanicsAction action)
         {
             action.EnterAction();
             action.UpdateAction();

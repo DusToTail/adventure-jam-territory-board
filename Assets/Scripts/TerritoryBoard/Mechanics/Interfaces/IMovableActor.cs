@@ -1,6 +1,6 @@
 namespace TerritoryBoard.Mechanics
 {
-    public interface IMovableActor : IActor
+    public interface IMovableActor : IMechanicsActor
     {
         public int currentXCoordinate { get;}
         public int currentYCoordinate { get;}

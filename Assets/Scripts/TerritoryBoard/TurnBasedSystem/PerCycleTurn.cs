@@ -7,8 +7,8 @@ namespace TerritoryBoard.TurnBasedSystem
     {
         public PerCycleTurn(string id) : base(id)
         {
-            Actors = new List<IActor>();
-            Actions = new List<IAction>();
+            Actors = new List<ITurnBasedActor>();
+            Actions = new List<ITurnBasedAction>();
         }
 
         public override bool ReadyForExcution()
@@ -47,11 +47,11 @@ namespace TerritoryBoard.TurnBasedSystem
             return Task.WhenAll(tasks);
         }
 
-        public override void AddActor(IActor actor)
+        public override void AddActor(ITurnBasedActor actor)
         {
             Actors.Add(actor);
         }
-        public override void AddAction(IAction action)
+        public override void AddAction(ITurnBasedAction action)
         {
             Actions.Add(action);
         }

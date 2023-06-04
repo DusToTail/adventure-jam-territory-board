@@ -4,7 +4,7 @@ namespace TerritoryBoard.TurnBasedSystem
 {
     public class PerActorTurnController : TurnController
     {
-        private IActor _currentActor;
+        private ITurnBasedActor _currentActor;
         private int _currentActorIndex;
 
         public PerActorTurnController()

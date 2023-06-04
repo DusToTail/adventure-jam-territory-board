@@ -1,6 +1,6 @@
 namespace TerritoryBoard.Mechanics
 {
-    public class MoveAction : BaseAction
+    public class MoveAction : MechanicsAction
     {
         private int newX;
         private int newY;

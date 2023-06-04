@@ -56,8 +56,8 @@ namespace TerritoryBoard.TurnBasedSystem
 
             State = EngineState.Standby;
         }
-        public void RegisterActor(IActor actor) => ActorManager.RegisterActor(actor);
-        public void UnregisterActor(IActor actor) => ActorManager.UnregisterActor(actor);
+        public void RegisterActor(ITurnBasedActor actor) => ActorManager.RegisterActor(actor);
+        public void UnregisterActor(ITurnBasedActor actor) => ActorManager.UnregisterActor(actor);
         private void ValidateComponent()
         {
             if (TurnController == null)
