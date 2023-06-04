@@ -3,8 +3,10 @@
     "rootNamespace": "Gameplay",
     "references": [
         "GUID:c56d730ddcf2c7245aa285f162802208",
-        "GUID:4b863cec1f9d43b459f6dcfa4d9fe798",
-        "GUID:812fc255b766eef41a84cf3e1391e236"
+        "GUID:812fc255b766eef41a84cf3e1391e236",
+        "GUID:60776873e74f15d4583c9d7decda31e6",
+        "GUID:a52e76501ebbd6b4688a2b435fd0a38e",
+        "GUID:d6fac060f4489434b91fa030b23d0f25"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],
