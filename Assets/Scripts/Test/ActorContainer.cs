@@ -35,7 +35,7 @@ public class SimpleActor : TurnBasedActor
     }
     public override ITurnBasedAction SubmitAction()
     {
-        _action = new DebugLog("Hello World!", this);
+        turnBasedAction = new DebugLog("Hello World!", this);
         return base.SubmitAction();
     }
 }
