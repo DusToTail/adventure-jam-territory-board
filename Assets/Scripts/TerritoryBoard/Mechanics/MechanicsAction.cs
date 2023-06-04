@@ -4,9 +4,12 @@ namespace TerritoryBoard.Mechanics
     {
         public IMechanicsActor Actor { get; set; }
 
-        public event IMechanicsAction.OnEnter onEnter;
-        public event IMechanicsAction.OnUpdate onUpdate;
-        public event IMechanicsAction.OnExit onExit;
+        public delegate void OnEnter(IMechanicsAction action);
+        public delegate void OnUpdate(IMechanicsAction action);
+        public delegate void OnExit(IMechanicsAction action);
+        public event OnEnter onEnter;
+        public event OnUpdate onUpdate;
+        public event OnExit onExit;
 
         public MechanicsAction(IMechanicsActor actor)
         {
