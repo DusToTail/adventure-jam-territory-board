@@ -26,6 +26,7 @@ namespace TerritoryBoard.Mechanics
             {
                 Levels.Push(level);
             }
+
             sender.onPopulationChanged += Reevaluate;
             _sender = sender;
         }

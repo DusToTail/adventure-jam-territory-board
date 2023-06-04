@@ -15,8 +15,12 @@ namespace TerritoryBoard
             { 
                 value = value > MaxPopulation ? MaxPopulation : value;
                 value = value < MinPopulation ? MinPopulation : value;
+                bool changed = _currentPopulation != value;
                 _currentPopulation = value;
-                onPopulationChanged?.Invoke(this);
+                if(changed)
+                {
+                    onPopulationChanged?.Invoke(this);
+                }
             }
         }
         public int MinPopulation
@@ -25,7 +29,6 @@ namespace TerritoryBoard
             set
             {
                 _minPopulation = value;
-                onPopulationChanged?.Invoke(this);
             }
         }
         public int MaxPopulation
@@ -34,7 +37,6 @@ namespace TerritoryBoard
             set
             {
                 _maxPopulation = value;
-                onPopulationChanged?.Invoke(this);
             }
         }
 
@@ -48,12 +50,16 @@ namespace TerritoryBoard
             }
             set
             {
+                bool changed = _influenceOutputFactor != value;
                 _influenceOutputFactor = value;
-                onInfluenceSenderChanged?.Invoke(this);
+                if(changed)
+                {
+                    onInfluenceSenderChanged?.Invoke(this);
+                }
             }
         }
-        public event IInfluenceSender.OnChanged onInfluenceSenderChanged;
-        public event IPopulation.OnChanged onPopulationChanged;
+        public event IInfluenceSender.OnInfluenceSenderChanged onInfluenceSenderChanged;
+        public event IPopulation.OnPopulationChanged onPopulationChanged;
 
         public ITeam Team
         {
