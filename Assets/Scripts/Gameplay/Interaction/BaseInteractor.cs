@@ -10,9 +10,19 @@ namespace Gameplay.Interaction
 
         public void Select(ISelectable currentSelectable)
         {
-            PreviousSelectable?.OnSelectExit();
-            CurrentSelectable = currentSelectable;
-            CurrentSelectable?.OnSelectExit();
+            PreviousSelectable = CurrentSelectable;
+            if(PreviousSelectable != null)
+            {
+                PreviousSelectable.OnSelectExit();
+                PreviousSelectable.Selected = false;
+            }
+
+            if (currentSelectable != null)
+            {
+                CurrentSelectable = currentSelectable;
+                CurrentSelectable.OnSelectEnter();
+                CurrentSelectable.Selected = true;
+            }
         }
 
         public IHoverable CurrentHoverable { get; protected set; }
@@ -20,9 +30,20 @@ namespace Gameplay.Interaction
 
         public void Hover(IHoverable currentHoverable)
         {
-            PreviousHoverable?.OnHoverExit();
-            CurrentHoverable = currentHoverable;
-            CurrentHoverable?.OnHoverExit();
+            PreviousHoverable = CurrentHoverable;
+            if (PreviousHoverable != null)
+            {
+                PreviousHoverable.OnHoverExit();
+                PreviousHoverable.Hovered = false;
+            }
+
+            if (currentHoverable != null)
+            {
+                CurrentHoverable = currentHoverable;
+                CurrentHoverable.OnHoverEnter();
+                CurrentHoverable.Hovered = true;
+            }
+
         }
     }
 }

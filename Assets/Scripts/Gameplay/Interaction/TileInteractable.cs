@@ -1,38 +1,101 @@
+using System.Collections;
 using UnityEngine;
 using TerritoryBoard;
 
 namespace Gameplay.Interaction
 {
-    [RequireComponent(typeof(HexagonTile))]
     public class TileInteractable : BaseInteractable
     {
+        [SerializeField] private OnHoverConfig hoverConfig;
+        [SerializeField] private OnSelectConfig selectConfig;
+        [SerializeField] private AnimationCurve hoverCurve;
+        [SerializeField] private Transform model;
+
+        // TODO: Use coroutine for flexibility or use animation of performance or job system
+
+        private HexagonTile _tile;
+        //private Vector3 _defaultPosition;
+        //private float _hoverTime;
+        private Material _material;
+        //private Coroutine _hoverEnterCoroutine;
+        //private Coroutine _hoverExitCoroutine;
+
+        private void Start()
+        {
+            _tile = GetComponentInParent<HexagonTile>();
+            //_defaultPosition = _tile.defaultWorldPosition;
+            _material = model.GetComponent<Renderer>().material;
+        }
+
         public override void OnHoverEnter()
         {
-            // TODO: turn on highlight and transit to hovered animation clip
+            if (Selected) { return; }
+            //StopAllCoroutines();
+            //_hoverEnterCoroutine = StartCoroutine(OnHoverEnterCoroutine());
+            _material.color = hoverConfig.hoveredColor;
 
-            // Required for proper enter/exit of coroutine for OnHoverStay()
-            base.OnHoverEnter();
         }
         public override void OnHoverExit()
         {
-            // TODO: turn off highlight and transit back to idle animation clip
-
-            // Required for proper enter/exit of coroutine for OnHoverStay()
-            base.OnHoverExit();
+            if (Selected) { return; }
+            //StopAllCoroutines();
+            //_hoverExitCoroutine = StartCoroutine(OnHoverExitCoroutine());
+            _material.color = hoverConfig.defaultColor;
         }
+
         public override void OnSelectEnter()
         {
-            // TODO: turn on highlight and transit to selected animation clip
-
-            // Required for proper enter/exit of coroutine for OnSelectStay()
-            base.OnSelectEnter();
+            _material.color = selectConfig.selectedColor;
         }
         public override void OnSelectExit()
         {
-            // TODO: turn on highlight and transit to idle animation clip
+            _material.color = selectConfig.defaultColor;
+        }
 
-            // Required for proper enter/exit of coroutine for OnSelectStay()
-            base.OnSelectExit();
+        //private IEnumerator OnHoverEnterCoroutine()
+        //{
+        //    while(_hoverTime < 1)
+        //    {
+        //        float depth = hoverConfig.depth * hoverCurve.Evaluate(_hoverTime);
+        //        model.transform.position = _defaultPosition + new Vector3(0, depth, 0);
+        //        _hoverTime += Time.deltaTime / hoverConfig.duration;
+        //        yield return null;
+        //    }
+        //    while (_hoverTime > 0)
+        //    {
+        //        float depth = hoverConfig.depth * hoverCurve.Evaluate(_hoverTime);
+        //        model.transform.position = _defaultPosition + new Vector3(0, depth, 0);
+        //        _hoverTime -= Time.deltaTime / hoverConfig.duration;
+        //        yield return null;
+        //    }
+        //    model.transform.position = _defaultPosition;
+        //    _hoverTime = 0;
+        //}
+        //private IEnumerator OnHoverExitCoroutine()
+        //{
+        //    while(_hoverTime > 0)
+        //    {
+        //        float depth = hoverConfig.depth * hoverCurve.Evaluate(_hoverTime);
+        //        model.transform.position = _defaultPosition + new Vector3(0, depth, 0);
+        //        _hoverTime -= Time.deltaTime / hoverConfig.duration;
+        //        yield return null;
+        //    }
+        //    model.transform.position = _defaultPosition;
+        //    _hoverTime = 0;
+        //}
+
+        [System.Serializable]
+        private struct OnHoverConfig
+        {
+            public Color defaultColor;
+            public Color hoveredColor;
+        }
+
+        [System.Serializable]
+        private struct OnSelectConfig
+        {
+            public Color defaultColor;
+            public Color selectedColor;
         }
     }
 }

@@ -1,5 +1,4 @@
 using UnityEngine;
-using UnityEngine.Events;
 using UnityEngine.InputSystem;
 
 namespace Gameplay.Interaction
@@ -28,12 +27,14 @@ namespace Gameplay.Interaction
         public void OnSelect(InputAction.CallbackContext context)
         {
             Vector2 pos = _pointer.position.ReadValue();
-            Debug.Log($"OnSelect at {pos}");
             var ray = raycastCamera.ScreenPointToRay(pos);
             int hitCount = Physics.RaycastNonAlloc(ray, _hits, raycastConfig.maxDistance, raycastConfig.layerMask, raycastConfig.queryTriggerInteraction);
             if(hitCount < 1)
             {
                 Select(null);
+#if UNITY_EDITOR
+                Debug.DrawRay(ray.origin, ray.direction * raycastConfig.maxDistance, Color.red, 2f, true);
+#endif
                 return;
             }
             var col = _hits[0].collider;
@@ -41,25 +42,33 @@ namespace Gameplay.Interaction
             if (selectable != null)
             {
                 Select(selectable);
+#if UNITY_EDITOR
+                Debug.DrawLine(ray.origin, ray.direction * raycastConfig.maxDistance, Color.green, 2f, true);
+#endif
             }
         }
 
         public void OnHover(InputAction.CallbackContext context)
         {
             Vector2 pos = context.ReadValue<Vector2>();
-            Debug.Log($"OnHover at {pos}");
             var ray = raycastCamera.ScreenPointToRay(pos);
             int hitCount = Physics.RaycastNonAlloc(ray, _hits, raycastConfig.maxDistance, raycastConfig.layerMask, raycastConfig.queryTriggerInteraction);
             if (hitCount < 1)
             {
                 Hover(null);
+#if UNITY_EDITOR
+                Debug.DrawRay(ray.origin, ray.direction * raycastConfig.maxDistance, Color.red, 0.01f, true);
+#endif
                 return;
             }
             var col = _hits[0].collider;
             var hoverable = col.GetComponent<IHoverable>();
-            if (hoverable != null)
+            if (hoverable != null && hoverable != CurrentHoverable)
             {
                 Hover(hoverable);
+#if UNITY_EDITOR
+                Debug.DrawRay(ray.origin, ray.direction * raycastConfig.maxDistance, Color.green, 0.01f, true);
+#endif
             }
         }
 
