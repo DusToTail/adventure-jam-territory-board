@@ -68,7 +68,22 @@ namespace TerritoryBoard
 
         public void SetTile(ITile tile)
         {
+            var hexTile = tile as HexagonTile;
             _tile = tile;
+            transform.parent = hexTile.AttachTransform;
+            transform.SetLocalPositionAndRotation(Vector3.zero, Quaternion.identity);
+            hexTile.Structure = this;
+        }
+
+        public virtual void OnCreate(ITile tile)
+        {
+            SetTile(tile);
+        }
+        public virtual void OnDelete()
+        {
+            Destroy(gameObject);
+
+            _tile.Structure = null;
         }
     }
 }

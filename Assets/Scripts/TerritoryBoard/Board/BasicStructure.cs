@@ -5,17 +5,15 @@ namespace TerritoryBoard
 {
     public class BasicStructure : Structure
     {
-#if UNITY_EDITOR
         [SerializeField] private bool initializeOnStart;
         [SerializeField] private InfluenceLevelController.Config config;
+        private InfluenceLevelController _influenceController;
 
         private void Start()
         {
             if (initializeOnStart)
                 InitializeInluenceController(config);
         }
-#endif
-        private InfluenceLevelController _influenceController;
 
         public void InitializeInluenceController(InfluenceLevelController.Config config)
         {
@@ -35,4 +33,3 @@ namespace TerritoryBoard
 
     }
 }
-    

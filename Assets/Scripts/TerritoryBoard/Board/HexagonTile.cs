@@ -9,7 +9,8 @@ namespace TerritoryBoard
         [SerializeField] private MeshRenderer meshRenderer;
         [SerializeField] private MeshCollider meshCollider;
 
-        public Vector3 defaultWorldPosition { get; private set; }
+        public Transform AttachTransform { get; private set; }
+        public Vector3 DefaultWorldPosition { get; private set; }
         private HexagonBoard _board;
         private int _influenceReceiveRange;
 
@@ -22,11 +23,13 @@ namespace TerritoryBoard
             meshCollider.sharedMesh = _board.CachedMesh;
 
             _influenceReceiveRange = _board.tileConfig.influenceReceiveRange;
+
+            AttachTransform = transform.Find("Attach");
         }
 
         public void SetDefaultWorldPosition(Vector3 pos)
         {
-            defaultWorldPosition = pos;
+            DefaultWorldPosition = pos;
         }
 
         public TeamInfluenceProfile GetTeamInfluenceProfile()
