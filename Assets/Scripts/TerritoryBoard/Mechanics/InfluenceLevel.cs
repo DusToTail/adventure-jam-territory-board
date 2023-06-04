@@ -1,5 +1,6 @@
 namespace TerritoryBoard.Mechanics
 {
+    [System.Serializable]
     public struct InfluenceLevel
     {
         public string name;
