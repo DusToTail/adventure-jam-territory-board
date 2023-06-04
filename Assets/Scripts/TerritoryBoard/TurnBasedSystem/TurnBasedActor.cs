@@ -2,19 +2,19 @@ namespace TerritoryBoard.TurnBasedSystem
 {
     public class TurnBasedActor : ITurnBasedActor
     {
-        string Utilities.IUniqueIdentifier.Id => _id;
+        string Utilities.IUniqueIdentifier.Id => id;
         public bool HasSentInput { get; set; }
         public bool CanSendInput { get; set; }
         public bool HasFinishedAction { get; set; }
 
-        protected ITurnBasedAction _action;
-        private string _id;
-        protected TurnController _turnController;
+        protected ITurnBasedAction turnBasedAction;
+        protected string id;
+        protected TurnController turnController;
 
         public TurnBasedActor(string id, TurnController turnController)
         {
-            _id = id;
-            _turnController = turnController;
+            this.id = id;
+            this.turnController = turnController;
         }
 
         public virtual void ResetState()
@@ -25,18 +25,18 @@ namespace TerritoryBoard.TurnBasedSystem
         }
         public virtual ITurnBasedAction SubmitAction()
         {
-            if (_action == null)
+            if (turnBasedAction == null)
             {
-                _action = new TurnBasedAction(this);
+                turnBasedAction = new TurnBasedAction(this);
             }
             HasSentInput = true;
             CanSendInput = false;
-            _turnController.CurrentTurn.AddAction(_action);
-            _action.onActionFinished += (x) =>
+            turnController.CurrentTurn.AddAction(turnBasedAction);
+            turnBasedAction.onActionFinished += (x) =>
             {
                 HasFinishedAction = true;
             };
-            return _action;
+            return turnBasedAction;
         }
     }
 }
