@@ -645,6 +645,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   prefab: {fileID: 795773741587585613, guid: 57ab6edc97d492b4b858572f9466fc3e, type: 3}
+  defaultTileMaterial: {fileID: 2100000, guid: 2a9c9d46dfd61324eb8f0d4bc51650f1, type: 2}
   boardConfig:
     width: 10
     height: 10

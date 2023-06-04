@@ -7,6 +7,7 @@ namespace TerritoryBoard
     public class HexagonBoard : MonoBehaviour
     {
         [SerializeField] private GameObject prefab;
+        [SerializeField] private Material defaultTileMaterial;
         [HideInInspector] public BoardConfig boardConfig;
         [HideInInspector] public HexagonTile.Config tileConfig;
 
@@ -29,7 +30,7 @@ namespace TerritoryBoard
 
             // Procedurally create mesh and assign material and cache them
             CachedMesh = HexagonTileUtilities.GetMesh(hexagonSize, hexagonHeight, pivot);
-            CachedMaterial = new Material(Shader.Find("Universal Render Pipeline/Lit"));
+            CachedMaterial = defaultTileMaterial;
 
             // Initialize each tile and assign each tile to the cell's value
             _grid = new HexagonGrid(width, height, forwardOffsetOddHeight);
