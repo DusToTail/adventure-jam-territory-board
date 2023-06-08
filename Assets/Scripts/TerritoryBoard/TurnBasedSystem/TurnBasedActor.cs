@@ -1,42 +1,53 @@
-namespace TerritoryBoard.TurnBasedSystem
+using System;
+
+namespace TerritoryBoard.TurnController
 {
     public class TurnBasedActor : ITurnBasedActor
     {
-        string Utilities.IUniqueIdentifier.Id => id;
-        public bool HasSentInput { get; set; }
-        public bool CanSendInput { get; set; }
-        public bool HasFinishedAction { get; set; }
+        public int Order { get; set; }
+        public bool IsActive { get; set; }
+        public bool IsTurnOwner { get; set; }
 
-        protected ITurnBasedAction turnBasedAction;
-        protected string id;
-        protected TurnController turnController;
+        string Utilities.IUniqueIdentifier.Id => _id;
+        private string _id;
+        private TurnController _turnController;
 
-        public TurnBasedActor(string id, TurnController turnController)
+        public TurnBasedActor(string id, int order)
         {
-            this.id = id;
-            this.turnController = turnController;
+            _id = id;
+            Order = order;
         }
+        public void BindController(TurnController turnController)
+        {
+            _turnController = turnController;
 
-        public virtual void ResetState()
-        {
-            CanSendInput = true;
-            HasSentInput = false;
-            HasFinishedAction = false;
-        }
-        public virtual ITurnBasedAction SubmitAction()
-        {
-            if (turnBasedAction == null)
+            _turnController.onStarted += () =>
             {
-                turnBasedAction = new TurnBasedAction(this);
-            }
-            HasSentInput = true;
-            CanSendInput = false;
-            turnController.CurrentTurn.AddAction(turnBasedAction);
-            turnBasedAction.onActionFinished += (x) =>
-            {
-                HasFinishedAction = true;
+                IsActive = true;
+                IsTurnOwner = false;
             };
-            return turnBasedAction;
+            _turnController.onEnded += () =>
+            {
+                IsActive = false;
+                IsTurnOwner = false;
+            };
+        }
+        public void ExecuteAction(ITurnBasedAction action)
+        {
+            if(action == null)
+            {
+                throw new ArgumentNullException(nameof(action));
+            }
+            action.Execute();
+            _turnController.UpdateTurn(this, action);
+        }
+        public virtual void StartTurn()
+        {
+            _turnController.StartTurn(this);
+        }
+        public virtual void EndTurn()
+        {
+            _turnController.EndTurn(this);
         }
     }
 }

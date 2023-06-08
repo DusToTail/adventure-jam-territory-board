@@ -1,13 +1,13 @@
 using TerritoryBoard.Mechanics;
-using TerritoryBoard.TurnBasedSystem;
+using TerritoryBoard.TurnController;
 using System.Collections.Generic;
 using System;
 
 namespace Gameplay
 {
-    public abstract class Player : TurnBasedActor, ITeamMember
+    public class Player : TurnBasedActor, ITeamMember
     {
-        public readonly Dictionary<string, PlayerState> States = new Dictionary<string, PlayerState>()
+        public static readonly Dictionary<string, PlayerState> States = new Dictionary<string, PlayerState>()
         {
             { "WaitingOthers", new PlayerState("WaitingOthers")},
             { "SelectingBoard", new PlayerState("SelectingBoard")},
@@ -18,6 +18,8 @@ namespace Gameplay
             { "DeletingStructure", new PlayerState("DeletingStructure")},
             { "DeletingUnit", new PlayerState("DeletingUnit")}
         };
+
+        public string Name { get; set; }
 
         public ITeam Team
         {
@@ -69,12 +71,14 @@ namespace Gameplay
         }
         private PlayerState _playerState;
 
-        protected Player(string id, TurnController turnController) : base(id, turnController)
+        protected Player(string name, string id, int order) : base(id, order)
         {
+            Name = name;
             _playerState = States["WaitingForOthers"];
         }
 
-        public abstract void Initialize();
+
+
 
         public PlayerState GetPlayerState(string stateName)
         {
@@ -82,7 +86,7 @@ namespace Gameplay
             {
                 return playerState;
             }
-            throw new ArgumentException($"Player ({id}): failed to get PlayerState({stateName})!");
+            throw new ArgumentException($"Player ({Name}): failed to get PlayerState({stateName})!");
         }
     }
 }

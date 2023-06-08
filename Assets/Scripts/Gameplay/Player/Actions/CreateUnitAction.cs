@@ -1,5 +1,5 @@
 using TerritoryBoard;
-using TerritoryBoard.TurnBasedSystem;
+using TerritoryBoard.TurnController;
 using UnityEngine;
 
 namespace Gameplay

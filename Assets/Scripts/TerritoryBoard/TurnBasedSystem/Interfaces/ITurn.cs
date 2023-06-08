@@ -1,18 +1,13 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
-namespace TerritoryBoard.TurnBasedSystem
+namespace TerritoryBoard.TurnController
 {
-    public interface ITurn
+    internal interface ITurn
     {
         public string Id { get; }
-        public List<ITurnBasedActor> Actors { get;}
-        public List<ITurnBasedAction> Actions { get;}
-
-        public bool ReadyForExcution();
-        public bool HasFinishedExecution();
-        public Task Execute();
+        public Dictionary<ITurnBasedActor, List<ITurnBasedAction>> ActorsDictionary { get;}
         public void AddActor(ITurnBasedActor actor);
-        public void AddAction(ITurnBasedAction action);
+        public void AddAction(ITurnBasedAction action, ITurnBasedActor actor);
     }
 }

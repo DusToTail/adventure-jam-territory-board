@@ -1,6 +1,6 @@
 {
-    "name": "TerritoryBoard.TurnBasedSystem",
-    "rootNamespace": "TerritoryBoard.TurnBasedSystem",
+    "name": "TerritoryBoard.TurnController",
+    "rootNamespace": "TerritoryBoard.TurnController",
     "references": [
         "GUID:d6fac060f4489434b91fa030b23d0f25"
     ],

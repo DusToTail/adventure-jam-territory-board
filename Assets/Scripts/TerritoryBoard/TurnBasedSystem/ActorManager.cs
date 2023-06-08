@@ -1,7 +1,7 @@
 using System;
 using TerritoryBoard.Utilities;
 
-namespace TerritoryBoard.TurnBasedSystem
+namespace TerritoryBoard.TurnController
 {
     public class ActorManager : BaseManager<ITurnBasedActor>
     {

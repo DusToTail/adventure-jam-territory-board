@@ -1,7 +1,7 @@
 using System;
 using UnityEngine;
 using TerritoryBoard;
-using TerritoryBoard.TurnBasedSystem;
+using TerritoryBoard.TurnController;
 using TerritoryBoard.Mechanics;
 
 public class GameManager : MonoBehaviour
@@ -10,7 +10,7 @@ public class GameManager : MonoBehaviour
 
     [SerializeField] private GameConfigSO gameConfigSO;
     public HexagonBoard Board { get; private set; }
-    public TurnBasedEngine TurnEngine { get; private set; }
+    public TurnController TurnController { get; private set; }
     public TeamManager TeamManager { get; private set; }
 
     private void Awake()
@@ -32,17 +32,14 @@ public class GameManager : MonoBehaviour
             Board = FindObjectOfType<HexagonBoard>();
             if (gameConfigSO == null)
             {
-                throw new Exception("GameManager: game config is null");
+                throw new ArgumentNullException("GameManager: game config is null");
             }
             Board.boardConfig = gameConfigSO.boardConfig;
             Board.tileConfig = gameConfigSO.tileConfig;
         }
 
         {
-            TurnEngine = TurnBasedEngine.Instance;
-            TurnEngine.SetTurnController(new PerActorTurnController());
-            TurnEngine.SetActorManager(new ActorManager());
-            TurnEngine.Rebind();
+            TurnController = new TurnController();
         }
 
         {

@@ -1,15 +1,11 @@
-using TerritoryBoard.TurnBasedSystem;
+//using TerritoryBoard.TurnBasedSystem;
 
-namespace Gameplay
-{
-    public class HumanPlayer : Player
-    {
-        public HumanPlayer(string id, TurnController turnController) : base(id, turnController)
-        {
-        }
-
-        public override void Initialize()
-        {
-        }
-    }
-}
+//namespace Gameplay
+//{
+//    public class HumanPlayer : Player
+//    {
+//        public HumanPlayer(string id, TurnController turnController) : base(id, turnController)
+//        {
+//        }
+//    }
+//}

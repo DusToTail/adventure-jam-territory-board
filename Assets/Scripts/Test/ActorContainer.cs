@@ -1,42 +1,43 @@
 using UnityEngine;
 using UnityEngine.InputSystem;
-using TerritoryBoard.TurnBasedSystem;
+using TerritoryBoard.TurnController;
 
+[DefaultExecutionOrder(int.MinValue)]
 public class ActorContainer : MonoBehaviour
 {
     [SerializeField] private string id;
+    [SerializeField] private int order;
+    [SerializeField] private InputAction action;
     [SerializeField] private bool debugLogInput;
     public ITurnBasedActor Actor { get { return _actor; } }
-
     private TurnBasedActor _actor;
 
     private void Start()
     {
-        _actor = new SimpleActor(id, TurnBasedEngine.Instance.TurnController);
+        _actor = new TurnBasedActor(id, order);
+        action.performed += (ctx) =>
+        {
+            if (!_actor.IsTurnOwner) { Debug.LogWarning($"{gameObject.name} ({Actor.Id}): is not the turn owner! Please be patient"); return; }
+            _actor.StartTurn();
+            _actor.ExecuteAction(new DebugLog($"{gameObject.name} ({Actor.Id}): Hello World!", _actor));
+            _actor.EndTurn();
+        };
     }
     private void Update()
     {
-        if (!_actor.CanSendInput || _actor.HasSentInput) { return; }
+        if (!_actor.IsTurnOwner) { return; }
         if(debugLogInput)
             Debug.Log($"{gameObject.name} ({Actor.Id}): Waiting for Input...");
-        if (Keyboard.current.spaceKey.wasPressedThisFrame)
-        {
-            if (debugLogInput)
-                Debug.LogWarning("Pressed Space Key!");
-            _actor.SubmitAction();
-        }
     }
-}
 
-public class SimpleActor : TurnBasedActor
-{
-    public SimpleActor(string id, TurnController turnController):base(id, turnController)
+    private void OnEnable()
     {
+        action.Enable();
     }
-    public override ITurnBasedAction SubmitAction()
+
+    private void OnDisable()
     {
-        turnBasedAction = new DebugLog("Hello World!", this);
-        return base.SubmitAction();
+        action.Disable();
     }
 }
 

@@ -1,26 +1,50 @@
 using System.Collections.Generic;
-using System.Threading.Tasks;
+using System;
 
-namespace TerritoryBoard.TurnBasedSystem
+namespace TerritoryBoard.TurnController
 {
-    public abstract class Turn : ITurn, Utilities.IUniqueIdentifier
+    internal class Turn : ITurn, Utilities.IUniqueIdentifier
     {
         public string Id { get { return _id; }}
-        public List<ITurnBasedActor> Actors { get; protected set; }
-        public List<ITurnBasedAction> Actions { get; protected set; }
-        private string _id;
+        public Dictionary<ITurnBasedActor, List<ITurnBasedAction>> ActorsDictionary => _actorsDictionary;
 
-        public Turn(string id)
+        private string _id;
+        private Dictionary<ITurnBasedActor, List<ITurnBasedAction>> _actorsDictionary;
+
+        internal Turn(string id)
         {
             _id = id;
-            Actions = new List<ITurnBasedAction>();
-            Actors = new List<ITurnBasedActor>();
+            _actorsDictionary = new Dictionary<ITurnBasedActor, List<ITurnBasedAction>>();
         }
 
-        public abstract bool ReadyForExcution();
-        public abstract bool HasFinishedExecution();
-        public abstract Task Execute();
-        public abstract void AddActor(ITurnBasedActor actor);
-        public abstract void AddAction(ITurnBasedAction action);
+        public void AddActor(ITurnBasedActor actor)
+        {
+            if(actor == null)
+            {
+                throw new ArgumentNullException(nameof(actor));
+            }
+            if(_actorsDictionary.ContainsKey(actor))
+            {
+                throw new ArgumentException($"Actor ({actor.Id}) is already registered in turn {Id}");
+            }
+            _actorsDictionary.TryAdd(actor, new List<ITurnBasedAction>());
+        }
+        public void AddAction(ITurnBasedAction action, ITurnBasedActor actor)
+        {
+            if (actor == null)
+            {
+                throw new ArgumentNullException(nameof(actor));
+            }
+            if (!_actorsDictionary.ContainsKey(actor))
+            {
+                throw new ArgumentException($"Actor ({actor.Id}) does not exist in turn {Id}");
+            }
+            if(action == null)
+            {
+                throw new ArgumentNullException(nameof(actor));
+            }
+            var actions = _actorsDictionary[actor];
+            actions.Add(action);
+        }
     }
 }

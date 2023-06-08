@@ -1,4 +1,4 @@
-namespace TerritoryBoard.TurnBasedSystem
+namespace TerritoryBoard.TurnController
 {
     public class TurnBasedAction : ITurnBasedAction
     {

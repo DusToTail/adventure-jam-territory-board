@@ -1,79 +1,166 @@
+using System;
+using System.Linq;
 using System.Collections.Generic;
-using System.Threading.Tasks;
 
-namespace TerritoryBoard.TurnBasedSystem
+namespace TerritoryBoard.TurnController
 {
-    public abstract class TurnController
+    public class TurnController
     {
-        public enum TurnPhase : int
+        public enum TurnMode
         {
-            Beginning,
-            Waiting,
-            Executing,
-            Ending
+            OneTurnOneActor,
+            OneTurnAllActors
         }
+        public int TurnCount { get { return _turns != null ? _turns.Count : -1; } }
+        internal ITurn CurrentTurn { get { return _turns != null && _turns.Count > 0 ? _turns[_turns.Count - 1] : null; } }
+        internal List<ITurn> Turns { get { return _turns; } }
 
-        public Turn CurrentTurn { get { return _turns != null && _turns.Count > 0 ? _turns[_turns.Count - 1] : null; } }
-        public List<Turn> Turns { get { return _turns; } }
+        public ActorManager ActorManager { get; private set; }
+        public int MaxTurnCount { get; private set; }
+        public TurnMode Mode { get; private set; }
+        public bool IsInitialized { get; private set; }
+        public bool HasStarted { get; private set; }
+        public bool HasEnded { get; private set; }
 
-        
+        public delegate void Started();
+        public delegate void Ended();
+        public event Started onStarted;
+        public event Ended onEnded;
 
-        public TurnPhase Phase { get { return _phase; } protected set { _phase = value; onPhaseChanged?.Invoke(_phase); } }
-        public delegate void OnTurnPhaseChanged(TurnPhase newState);
-        public event OnTurnPhaseChanged onPhaseChanged;
+        private IEnumerator<ITurnBasedActor> _actorsEnumerator;
+        private IEnumerable<ITurnBasedActor> _actorsEnumerable;
+        private List<ITurn> _turns;
 
-        public int MaxTurnCount { get; set; } = 10;
-
-        protected ActorManager _actorManager;
-        
-        private TurnPhase _phase;
-        private List<Turn> _turns;
-
-        public void Initialize(ActorManager actorManager)
+        public TurnController()
         {
-            _turns = new List<Turn>();
-            _actorManager = actorManager;
+            ActorManager = new ActorManager();
+            _turns = new List<ITurn>();
+            IsInitialized = false;
+            HasStarted = false;
+            HasEnded = false;
         }
-        internal async Task RunAsync()
+        public void Initialize(ITurnBasedActor[] actors, Config config)
         {
+            MaxTurnCount = config.maxTurnCount;
+            Mode = config.mode;
+            foreach(var actor in actors)
             {
-                Phase = TurnPhase.Beginning;
-                BeginTurn();
+                ActorManager.RegisterActor(actor);
             }
-
-            {
-                Phase = TurnPhase.Waiting;
-                await WaitForActionAsync();
-            }
-
-            {
-                Phase = TurnPhase.Executing;
-                await ExecuteAsync();
-            }
-
-            {
-                Phase = TurnPhase.Ending;
-                EndTurn();
-            }
+            _actorsEnumerable = ActorManager.Dictionary.Values.OrderBy(x => x.Order);
+            _actorsEnumerator = _actorsEnumerable.GetEnumerator();
+            IsInitialized = true;
         }
-        public abstract void BeginTurn();
-        public async virtual Task WaitForActionAsync()
+        public void Shutdown()
         {
-            await Task.Run(async () =>
+            foreach (var actor in ActorManager.Dictionary.Values.ToArray())
             {
-                while (true)
+                ActorManager.UnregisterActor(actor);
+            }
+            _actorsEnumerator.Dispose();
+        }
+        public void StartGame()
+        {
+            onStarted?.Invoke();
+            HasStarted = true;
+
+            var head = _actorsEnumerable.First((x) => x.IsActive);
+            head.IsTurnOwner = true;
+        }
+        public void EndGame()
+        {
+            onEnded?.Invoke();
+            HasEnded = true;
+        }
+        internal void StartTurn(ITurnBasedActor actor)
+        {
+            if (Mode == TurnMode.OneTurnOneActor)
+            {
+                Turn turn = new Turn((_turns.Count).ToString());
+                turn.AddActor(actor);
+                _turns.Add(turn);
+
+                while (_actorsEnumerator.Current != actor)
                 {
-                    if (CurrentTurn.ReadyForExcution()) { break; }
-                    await Task.Delay(200);
+                    bool nextIsInBound = _actorsEnumerator.MoveNext();
+                    if (!nextIsInBound)
+                    {
+                        _actorsEnumerator = _actorsEnumerable.GetEnumerator();
+                    }
                 }
-            });
+            }
+            else if (Mode == TurnMode.OneTurnAllActors)
+            {
+                var head = _actorsEnumerable.First((x)=>x.IsActive);
+                if(actor == head)
+                {
+                    Turn turn = new Turn((_turns.Count).ToString());
+                    _actorsEnumerator = _actorsEnumerable.GetEnumerator();
+                    while (_actorsEnumerator.MoveNext())
+                    {
+                        turn.AddActor(_actorsEnumerator.Current);
+                    }
+                    _turns.Add(turn);
+                    _actorsEnumerator = _actorsEnumerable.GetEnumerator();
+                }
+
+                while (_actorsEnumerator.Current != actor)
+                {
+                    bool nextIsInBound = _actorsEnumerator.MoveNext();
+                    if (!nextIsInBound)
+                    {
+                        _actorsEnumerator = _actorsEnumerable.GetEnumerator();
+                    }
+                }
+            }
         }
-        public async virtual Task ExecuteAsync()
+        internal void EndTurn(ITurnBasedActor actor)
         {
-            await Task.Run(async () => await CurrentTurn.Execute());
+            if(_turns.Count > MaxTurnCount)
+            {
+                EndGame();
+                return;
+            }
+
+            while (true)
+            {
+                bool nextIsInBound = _actorsEnumerator.MoveNext();
+                if (nextIsInBound && _actorsEnumerator.Current.IsActive)
+                {
+                    break;
+                }
+                else if (!nextIsInBound)
+                {
+                    _actorsEnumerator = _actorsEnumerable.GetEnumerator();
+                }
+            }
+            actor.IsTurnOwner = false;
+            _actorsEnumerator.Current.IsTurnOwner = true;
         }
-        public virtual void EndTurn()
+        internal void UpdateTurn(ITurnBasedActor actor, ITurnBasedAction action)
         {
+            if (actor == null)
+            {
+                throw new ArgumentNullException(nameof(actor));
+            }
+            if (action == null)
+            {
+                throw new ArgumentNullException(nameof(action));
+            }
+            var turn = CurrentTurn;
+
+            if (!turn.ActorsDictionary.ContainsKey(actor))
+            {
+                throw new ArgumentException($"Actor {actor.Id} does not exist in turn {turn.Id}");
+            }
+            turn.AddAction(action, actor);
+        }
+
+        [Serializable]
+        public struct Config
+        {
+            public TurnMode mode;
+            public int maxTurnCount;
         }
     }
 }

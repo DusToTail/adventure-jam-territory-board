@@ -1,65 +1,41 @@
-using System.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.InputSystem;
-using TerritoryBoard.TurnBasedSystem;
+using TerritoryBoard.TurnController;
 
+[DefaultExecutionOrder(int.MaxValue)]
 public class TestTurnBasedSystem : MonoBehaviour
 {
-    public enum Mode
-    {
-        PerActor,
-        PerCycle
-    }
-    [SerializeField] private Mode turnMode;
+    [SerializeField] private TurnController.Config config;
     [SerializeField] ActorContainer[] actorContainers;
-    private TurnBasedEngine _engine;
-    private TurnController _turnController;
-    private ActorManager _actorManager;
+    public static TurnController turnController;
 
     private void Start()
     {
-        if(turnMode == Mode.PerActor)
-        {
-            _turnController = new PerActorTurnController();
-        }
-        else if(turnMode == Mode.PerCycle)
-        {
-            _turnController = new PerCycleTurnController();
-        }
-        _actorManager = new ActorManager();
-        _engine = TurnBasedEngine.Instance;
-        _engine.SetTurnController(_turnController);
-        _engine.SetActorManager(_actorManager);
-        _engine.Rebind();
+        turnController = new TurnController();
 
-        _engine.onStateChanged += (x) =>
+        ITurnBasedActor[] actors = new ITurnBasedActor[actorContainers.Length];
+        for (int i = 0; i < actors.Length; i++)
         {
-            Debug.Log("State:" + x);
-        };
-        _turnController.onPhaseChanged += (x) =>
-        {
-            Debug.Log("Phase:" + x);
-        };
+            actors[i] = actorContainers[i].Actor;
+            actors[i].BindController(turnController);
+        }
+
+        turnController.Initialize(actors, config);
+        turnController.onStarted += () => { Debug.Log("TurnController Started!"); };
+        turnController.onEnded += () => { Debug.Log("TurnController Ended!"); };
     }
 
-    private async void Update()
+    private void Update()
     {
-        if (_engine == null || _engine.State != TurnBasedEngine.EngineState.Standby) { return; }
+        if (turnController.HasStarted) { return; }
         if (Keyboard.current.enterKey.wasPressedThisFrame)
         {
-            foreach (var actor in actorContainers)
-            {
-                _engine.RegisterActor(actor.Actor);
-            }
-
-            Debug.Log($">>>Turn No.{_engine.TurnController.Turns.Count}");
-            await _engine.RunTurnAsync();
-            Debug.Log($"Turn ID {_engine.TurnController.CurrentTurn.Id}<<<");
-
-            foreach (var actor in actorContainers)
-            {
-                _engine.UnregisterActor(actor.Actor);
-            }
+            turnController.StartGame();
         }
+    }
+
+    private void OnDestroy()
+    {
+        turnController.Shutdown();
     }
 }
